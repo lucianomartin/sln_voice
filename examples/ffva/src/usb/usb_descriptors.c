@@ -115,7 +115,7 @@ const uint16_t tud_audio_desc_lengths[CFG_TUD_AUDIO] = {
         uac2_total_descriptors_length
 };
 
-#define CONFIG_TOTAL_LEN        (TUD_CONFIG_DESC_LEN + (CFG_TUD_AUDIO * uac2_total_descriptors_length) + TUD_DFU_DESC_LEN(DFU_ALT_COUNT))
+#define CONFIG_TOTAL_LEN        (TUD_CONFIG_DESC_LEN + (CFG_TUD_AUDIO * uac2_total_descriptors_length) /*+ TUD_DFU_DESC_LEN(DFU_ALT_COUNT)*/)
 #define EPNUM_AUDIO   0x01
 
 #define AUDIO_INTERFACE_STRING_INDEX 4
@@ -197,7 +197,7 @@ uint8_t const desc_configuration[] = {
 #endif
 
     // Interface number, Alternate count, starting string index, attributes, detach timeout, transfer size
-    TUD_DFU_DESCRIPTOR(ITF_NUM_DFU_MODE, DFU_ALT_COUNT, DFU_INTERFACE_STRING_INDEX, DFU_FUNC_ATTRS, 1000, CFG_TUD_DFU_XFER_BUFSIZE),
+    //TUD_DFU_DESCRIPTOR(ITF_NUM_DFU_MODE, DFU_ALT_COUNT, DFU_INTERFACE_STRING_INDEX, DFU_FUNC_ATTRS, 1000, CFG_TUD_DFU_XFER_BUFSIZE),
 
     }; // desc_configuration
 
@@ -220,9 +220,9 @@ char const *string_desc_arr[] = {(const char[]) {0x09, 0x04}, // 0: is supported
         XCORE_VOICE_PRODUCT_STR,     // 2: Product
         "123456",                    // 3: Serials, should use chip ID
         XCORE_VOICE_PRODUCT_STR,     // 4: Audio Interface
-        "DFU FACTORY",               // 5: DFU device
-        "DFU UPGRADE",               // 6: DFU device
-        "DFU DATAPARTITION",         // 7: DFU device
+        //"DFU FACTORY",               // 5: DFU device
+        //"DFU UPGRADE",               // 6: DFU device
+        //"DFU DATAPARTITION",         // 7: DFU device
         };
 
 static uint16_t _desc_str[32];

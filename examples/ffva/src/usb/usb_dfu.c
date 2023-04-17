@@ -55,13 +55,14 @@ static uint32_t dn_base_addr = 0;
 // During this period, USB host won't try to communicate with us.
 uint32_t tud_dfu_get_timeout_cb(uint8_t alt, uint8_t state)
 {
-    if ( state == DFU_DNBUSY ) {
+#if CFG_TUD_DFU
+   if ( state == DFU_DNBUSY ) {
         return 10;  // 10 ms
     } else if (state == DFU_MANIFEST) {
         // since we don't buffer entire image and do any flashing in manifest stage
         return 0;
     }
-  
+#endif
     return 0;
 }
 
@@ -70,6 +71,8 @@ uint32_t tud_dfu_get_timeout_cb(uint8_t alt, uint8_t state)
 // Once finished flashing, application must call tud_dfu_finish_flashing()
 void tud_dfu_download_cb(uint8_t alt, uint16_t block_num, uint8_t const* data, uint16_t length)
 {
+#if CFG_TUD_DFU
+
     rtos_printf("Received Alt %d BlockNum %d of length %d\n", alt, block_num, length);
 
     unsigned data_partition_base_addr = rtos_dfu_image_get_data_partition_addr(dfu_image_ctx);
@@ -84,7 +87,7 @@ void tud_dfu_download_cb(uint8_t alt, uint16_t block_num, uint8_t const* data, u
                 dn_base_addr = rtos_dfu_image_get_upgrade_addr(dfu_image_ctx);
                 bytes_avail = data_partition_base_addr - dn_base_addr;    
             }
-            /* fallthrough */
+            /* fallthrough 
         case 2:
             if (dn_base_addr == 0) {
                 total_len = 0;
@@ -131,6 +134,7 @@ void tud_dfu_download_cb(uint8_t alt, uint16_t block_num, uint8_t const* data, u
             tud_dfu_finish_flashing(DFU_STATUS_OK);
             break;
     }
+#endif
 }
 
 // Invoked when download process is complete, received DFU_DNLOAD (wLength=0) following by DFU_GETSTATUS (state=Manifest)
@@ -138,7 +142,8 @@ void tud_dfu_download_cb(uint8_t alt, uint16_t block_num, uint8_t const* data, u
 // Once finished flashing, application must call tud_dfu_finish_flashing()
 void tud_dfu_manifest_cb(uint8_t alt)
 {
-    (void) alt;
+#if CFG_TUD_DFU
+   (void) alt;
     rtos_printf("Download completed, enter manifestation\n");
 
     /* Perform a read to ensure all writes have been flushed */
@@ -155,6 +160,7 @@ void tud_dfu_manifest_cb(uint8_t alt)
     // flashing op for manifest is complete without error
     // Application can perform checksum, should it fail, use appropriate status such as errVERIFY.
     tud_dfu_finish_flashing(DFU_STATUS_OK);
+#endif
 }
 
 // Invoked when received DFU_UPLOAD request
@@ -162,6 +168,7 @@ void tud_dfu_manifest_cb(uint8_t alt)
 // Return the number of written bytes
 uint16_t tud_dfu_upload_cb(uint8_t alt, uint16_t block_num, uint8_t* data, uint16_t length)
 {
+#if CFG_TUD_DFU
     uint32_t endaddr = 0;
     uint16_t retval = 0;
     uint32_t addr = block_num * CFG_TUD_DFU_XFER_BUFSIZE;
@@ -196,6 +203,7 @@ uint16_t tud_dfu_upload_cb(uint8_t alt, uint16_t block_num, uint8_t* data, uint1
         retval = length;
     }
     return retval;
+#endif
 }
 
 // Invoked when the Host has terminated a download or upload transfer
