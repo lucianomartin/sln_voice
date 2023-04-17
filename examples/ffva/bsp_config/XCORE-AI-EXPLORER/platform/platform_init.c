@@ -209,7 +209,7 @@ void platform_init(chanend_t other_tile_c)
 
     mclk_init(other_tile_c);
     gpio_init();
-    flash_init();
+    //flash_init();
     i2c_init();
     spi_init();
     mics_init();
