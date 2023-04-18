@@ -87,7 +87,7 @@ void tud_dfu_download_cb(uint8_t alt, uint16_t block_num, uint8_t const* data, u
                 dn_base_addr = rtos_dfu_image_get_upgrade_addr(dfu_image_ctx);
                 bytes_avail = data_partition_base_addr - dn_base_addr;    
             }
-            /* fallthrough 
+            /* fallthrough */
         case 2:
             if (dn_base_addr == 0) {
                 total_len = 0;
